@@ -6,15 +6,21 @@ import (
 )
 
 type HiprusHook struct {
-	AcceptedLevels []logrus.Level
-	AuthToken      string
-	RoomName       string
-	Username       string
-	c              *hipchat.Client
+	AuthToken string
+	RoomName  string
+	Username  string
+	c         *hipchat.Client
 }
 
 func (hh *HiprusHook) Levels() []logrus.Level {
-	return hh.AcceptedLevels
+	return []logrus.Level{
+		logrus.DebugLevel,
+		logrus.InfoLevel,
+		logrus.WarnLevel,
+		logrus.ErrorLevel,
+		logrus.FatalLevel,
+		logrus.PanicLevel,
+	}
 }
 
 func (hh *HiprusHook) Fire(e *logrus.Entry) error {
