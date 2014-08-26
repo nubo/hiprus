@@ -6,6 +6,10 @@ import (
 	"github.com/andybons/hipchat"
 )
 
+const (
+	VERISON = "1.0.0"
+)
+
 // HiprusHook is a logrus Hook for dispatching messages to the specified
 // channel on Hipchat.
 type HiprusHook struct {
