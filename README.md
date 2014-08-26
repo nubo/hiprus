@@ -3,6 +3,8 @@ hiprus
 
 Package hiprus provides a Hipchat hook for the [logrus] loggin package.
 
+Please see the [documentation].
+
 ## Example
 
 ```Go
@@ -15,3 +17,4 @@ logrus.AddHook(&hiprus.HiprusHook{
 ```
 
 [logrus]: https://github.com/sirupsen/logrus
+[documentation]: http://godoc.org/github.com/nubo/hiprus
