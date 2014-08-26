@@ -1,3 +1,4 @@
+// Package hiprus provides a Hipchat hook for the logrus loggin package.
 package hiprus
 
 import (
@@ -5,22 +6,24 @@ import (
 	"github.com/andybons/hipchat"
 )
 
+// HiprusHook is a logrus Hook for dispatching messages to the specified
+// channel on Hipchat.
 type HiprusHook struct {
-	AuthToken string
-	RoomName  string
-	Username  string
-	c         *hipchat.Client
+	// Messages with a log level not contained in this array
+	// will not be dispatched. If nil, all messages will be dispatched.
+	AcceptedLevels []logrus.Level
+	AuthToken      string
+	RoomName       string
+	// If empty, "Hiprus" will be used.
+	Username string
+	c        *hipchat.Client
 }
 
 func (hh *HiprusHook) Levels() []logrus.Level {
-	return []logrus.Level{
-		logrus.DebugLevel,
-		logrus.InfoLevel,
-		logrus.WarnLevel,
-		logrus.ErrorLevel,
-		logrus.FatalLevel,
-		logrus.PanicLevel,
+	if hh.AcceptedLevels == nil {
+		return AllLevels
 	}
+	return hh.AcceptedLevels
 }
 
 func (hh *HiprusHook) Fire(e *logrus.Entry) error {
@@ -36,7 +39,7 @@ func (hh *HiprusHook) Fire(e *logrus.Entry) error {
 		color = hipchat.ColorPurple
 	case logrus.InfoLevel:
 		color = hipchat.ColorGreen
-	case logrus.FatalLevel, logrus.PanicLevel:
+	case logrus.ErrorLevel, logrus.FatalLevel, logrus.PanicLevel:
 		color = hipchat.ColorRed
 	default:
 		color = hipchat.ColorYellow
