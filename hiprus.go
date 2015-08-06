@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	VERISON = "1.0.2"
+	VERSION = "1.0.2"
 )
 
 // HiprusHook is a logrus Hook for dispatching messages to the specified
