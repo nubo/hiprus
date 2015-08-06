@@ -60,7 +60,8 @@ func (hh *HiprusHook) Fire(e *logrus.Entry) error {
 }
 
 func (hh *HiprusHook) initClient() error {
-	hh.c = &hipchat.Client{hh.AuthToken}
+	c := hipchat.NewClient(hh.AuthToken)
+	hh.c = &c
 
 	if hh.Username == "" {
 		hh.Username = "HipRus"
