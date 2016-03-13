@@ -20,4 +20,4 @@ logrus.AddHook(&hiprus.HiprusHook{
 [documentation]: http://godoc.org/github.com/nubo/hiprus
 
 ---
-Version 1.0.2
+Version 2.0.0
