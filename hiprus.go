@@ -20,7 +20,9 @@ type HiprusHook struct {
 	RoomName       string
 	// If empty, "Hiprus" will be used.
 	Username string
-	c        *hipchat.Client
+	// If empty hipchat cloud instance will be used. i.e., https://api.hipchat.com/v1
+	BaseURL string
+	c       *hipchat.Client
 }
 
 func (hh *HiprusHook) Levels() []logrus.Level {
@@ -61,6 +63,9 @@ func (hh *HiprusHook) Fire(e *logrus.Entry) error {
 
 func (hh *HiprusHook) initClient() error {
 	c := hipchat.NewClient(hh.AuthToken)
+	if hh.BaseURL != "" {
+		c.BaseURL = hh.BaseURL
+	}
 	hh.c = &c
 
 	if hh.Username == "" {
