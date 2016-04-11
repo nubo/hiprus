@@ -2,12 +2,20 @@
 package hiprus
 
 import (
+	"net/url"
+
 	"github.com/Sirupsen/logrus"
-	"github.com/andybons/hipchat"
+	"github.com/tbruyelle/hipchat-go/hipchat"
 )
 
 const (
-	VERSION = "1.0.2"
+	VERSION     = "2.0.0"
+	ColorYellow = "yellow"
+	ColorRed    = "red"
+	ColorGreen  = "green"
+	ColorPurple = "purple"
+	ColorGray   = "gray"
+	ColorRandom = "random"
 )
 
 // HiprusHook is a logrus Hook for dispatching messages to the specified
@@ -20,7 +28,9 @@ type HiprusHook struct {
 	RoomName       string
 	// If empty, "Hiprus" will be used.
 	Username string
-	c        *hipchat.Client
+	// If empty, will point to hipchat cloud
+	BaseURL string
+	c       *hipchat.Client
 }
 
 func (hh *HiprusHook) Levels() []logrus.Level {
@@ -38,30 +48,40 @@ func (hh *HiprusHook) Fire(e *logrus.Entry) error {
 	}
 
 	color := ""
+	notify := false
 	switch e.Level {
 	case logrus.DebugLevel:
-		color = hipchat.ColorPurple
+		color = ColorPurple
 	case logrus.InfoLevel:
-		color = hipchat.ColorGreen
+		color = ColorGreen
 	case logrus.ErrorLevel, logrus.FatalLevel, logrus.PanicLevel:
-		color = hipchat.ColorRed
+		color = ColorRed
+		notify = true
 	default:
-		color = hipchat.ColorYellow
+		color = ColorYellow
+		notify = true
 	}
 
-	return hh.c.PostMessage(hipchat.MessageRequest{
-		RoomId:        hh.RoomName,
+	_, err := hh.c.Room.Notification(hh.RoomName, &hipchat.NotificationRequest{
 		From:          hh.Username,
 		Message:       e.Message,
 		MessageFormat: "text",
-		Notify:        true,
+		Notify:        notify,
 		Color:         color,
 	})
+
+	return err
 }
 
 func (hh *HiprusHook) initClient() error {
 	c := hipchat.NewClient(hh.AuthToken)
-	hh.c = &c
+
+	if hh.BaseURL != "" {
+		hipchatUrl, _ := url.Parse(hh.BaseURL)
+		c.BaseURL = hipchatUrl
+	}
+
+	hh.c = c
 
 	if hh.Username == "" {
 		hh.Username = "HipRus"
