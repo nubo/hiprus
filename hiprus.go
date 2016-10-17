@@ -9,13 +9,13 @@ import (
 )
 
 const (
-	VERSION     = "2.0.0"
-	ColorYellow = "yellow"
-	ColorRed    = "red"
-	ColorGreen  = "green"
-	ColorPurple = "purple"
-	ColorGray   = "gray"
-	ColorRandom = "random"
+	VERSION                   = "2.0.0"
+	ColorYellow hipchat.Color = "yellow"
+	ColorRed    hipchat.Color = "red"
+	ColorGreen  hipchat.Color = "green"
+	ColorPurple hipchat.Color = "purple"
+	ColorGray   hipchat.Color = "gray"
+	ColorRandom hipchat.Color = "random"
 )
 
 // HiprusHook is a logrus Hook for dispatching messages to the specified
@@ -47,7 +47,7 @@ func (hh *HiprusHook) Fire(e *logrus.Entry) error {
 		}
 	}
 
-	color := ""
+	var color hipchat.Color
 	notify := false
 	switch e.Level {
 	case logrus.DebugLevel:
