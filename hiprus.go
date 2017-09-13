@@ -62,13 +62,17 @@ func (hh *HiprusHook) Fire(e *logrus.Entry) error {
 		notify = true
 	}
 
-	_, err := hh.c.Room.Notification(hh.RoomName, &hipchat.NotificationRequest{
+	response, err := hh.c.Room.Notification(hh.RoomName, &hipchat.NotificationRequest{
 		From:          hh.Username,
 		Message:       e.Message,
 		MessageFormat: "text",
 		Notify:        notify,
 		Color:         color,
 	})
+	
+	if err == nil {
+		response.Body.Close()
+	}
 
 	return err
 }
