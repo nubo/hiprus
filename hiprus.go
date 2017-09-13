@@ -71,7 +71,7 @@ func (hh *HiprusHook) Fire(e *logrus.Entry) error {
 	})
 	
 	if err == nil {
-		response.Body.Close()
+		_ = response.Body.Close()
 	}
 
 	return err
